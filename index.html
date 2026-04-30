@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Training Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --border: #d2d2d7;
+    --border-focus: #0071e3;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-placeholder: #aeaeb2;
+    --accent: #0071e3;
+    --accent-hover: #0077ed;
+    --accent-active: #006edb;
+    --success: #34c759;
+    --error: #ff3b30;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.06);
+    --shadow-focus: 0 0 0 4px rgba(0,113,227,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-header {
+    max-width: 680px;
+    margin: 0 auto 32px;
+    text-align: center;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .page-header .badge {
+    display: inline-block;
+    background: rgba(0,113,227,0.1);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 18px;
+  }
+
+  .page-header h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .page-header p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* ── Hero image ── */
+  .hero-image {
+    max-width: 680px;
+    margin: 0 auto 32px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .form-card {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .form-section {
+    padding: 36px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .field-group {
+    display: grid;
+    gap: 18px;
+  }
+
+  .field-group.two-col {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 520px) {
+    .form-section { padding: 28px 24px; }
+    .field-group.two-col { grid-template-columns: 1fr; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .field .hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: -3px;
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    background: #fff;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.6;
+  }
+
+  /* Custom select */
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper select {
+    cursor: pointer;
+    padding-right: 40px;
+  }
+
+  .select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 6px;
+    background: var(--text-secondary);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    pointer-events: none;
+  }
+
+  /* Radio / Checkbox groups */
+  .choice-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .choice-group.inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .choice-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .choice-group.inline .choice-item {
+    flex: 0 0 auto;
+  }
+
+  .choice-item:hover {
+    border-color: #b0b0b8;
+    background: #ececee;
+  }
+
+  .choice-item input[type="radio"],
+  .choice-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    background: #fff;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .choice-item input[type="checkbox"] {
+    border-radius: 5px;
+  }
+
+  .choice-item input[type="radio"]:checked,
+  .choice-item input[type="checkbox"]:checked {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .choice-item input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .choice-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%) rotate(45deg);
+    width: 5px;
+    height: 9px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+  }
+
+  .choice-item:has(input:checked) {
+    border-color: var(--accent);
+    background: rgba(0,113,227,0.05);
+  }
+
+  .choice-item span {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  /* Form footer */
+  .form-footer {
+    padding: 28px 40px 36px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .form-footer p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 340px;
+  }
+
+  .btn-submit {
+    background: var(--accent);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-submit:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 16px rgba(0,113,227,0.3);
+  }
+
+  .btn-submit:active {
+    background: var(--accent-active);
+    transform: scale(0.98);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Success state */
+  .success-screen {
+    display: none;
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 64px 40px;
+    text-align: center;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .success-screen .check-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .success-screen .check-icon svg { width: 30px; height: 30px; }
+
+  .success-screen h2 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .success-screen p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1d1d1f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 22px;
+    border-radius: 100px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="badge">Training Registration</div>
+  <h1>Application of Generative AI for Businesses</h1>
+  <p>Fill out the form below and our team will reach out with everything you need to get started.</p>
+</div>
+
+<!-- ── HERO IMAGE: replace the src with your actual image URL ── -->
+<div class="hero-image">
+  <img
+    src="Application of Generative AI for Businesses.png"
+    alt="Application of Generative AI for Businesses"
+  />
+</div>
+
+<form class="form-card" id="registrationForm">
+
+  <!-- Personal Info -->
+  <div class="form-section">
+    <div class="section-label">Personal Information</div>
+    <div class="field-group">
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Your full name" required />
+      </div>
+      <div class="field-group two-col">
+        <div class="field">
+          <label for="email">Email Address</label>
+          <div class="hint">Used for all communications</div>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        </div>
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <div class="hint">Preferably WhatsApp-enabled</div>
+          <input type="tel" id="phone" name="phone" placeholder="+233 XX XXX XXXX" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" placeholder="City, Country" required />
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Type -->
+  <div class="form-section">
+    <div class="section-label">Application Type</div>
+    <div class="choice-group inline">
+      <label class="choice-item">
+        <input type="radio" name="applicationType" value="Individual" required />
+        <span>Individual</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="applicationType" value="Group / Team" />
+        <span>Group / Team</span>
+      </label>
+    </div>
+
+    <div class="field" id="groupSizeField" style="display:none; margin-top: 18px;">
+      <label for="groupSize">Number of People in Group</label>
+      <input type="number" id="groupSize" name="groupSize" placeholder="e.g. 5" min="2" />
+    </div>
+  </div>
+
+  <!-- Training Type -->
+  <div class="form-section">
+    <div class="section-label">Training Type</div>
+    <div class="choice-group inline">
+      <label class="choice-item">
+        <input type="radio" name="trainingType" value="In-house Training" required />
+        <span>In-house Training</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="trainingType" value="Open Training" />
+        <span>Open Training</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Skill Level -->
+  <div class="form-section">
+    <div class="section-label">Current Skill Level</div>
+    <div class="choice-group inline">
+      <label class="choice-item">
+        <input type="radio" name="skillLevel" value="Beginner" required />
+        <span>Beginner</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="skillLevel" value="Intermediate" />
+        <span>Intermediate</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="skillLevel" value="Advanced" />
+        <span>Advanced</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Goals -->
+  <div class="form-section">
+    <div class="section-label">Your Goals</div>
+    <div class="field">
+      <label for="goals">What do you hope to achieve by the end of the program?</label>
+      <textarea id="goals" name="goals" placeholder="Share your goals and expectations…" required></textarea>
+    </div>
+  </div>
+
+  <!-- How They Heard -->
+  <div class="form-section">
+    <div class="section-label">How Did You Hear About Us?</div>
+    <div class="choice-group inline">
+      <label class="choice-item">
+        <input type="radio" name="referralSource" value="Social Media" required />
+        <span>Social Media</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="referralSource" value="Friend / Referral" />
+        <span>Friend / Referral</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="referralSource" value="School" />
+        <span>School</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="referralSource" value="Website" />
+        <span>Website</span>
+      </label>
+      <label class="choice-item">
+        <input type="radio" name="referralSource" value="Other" />
+        <span>Other</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <p>Your information is kept confidential and used only for enrollment purposes.</p>
+    <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+  </div>
+
+</form>
+
+<div class="success-screen" id="successScreen">
+  <div class="check-icon">
+    <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 15L12 21L24 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h2>Application Received!</h2>
+  <p>Thank you for applying. Our team will review your details and reach out to you shortly via email or WhatsApp.</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyYGhL7RDOf5bRMrul6qA1xnOsDmmAeAOJ30f_gKpCwXLpQmj4sZDFjleGSmkPC4ZAxNQ/exec';
+
+  function showToast(msg, duration = 3500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  // Show / hide group size field
+  document.querySelectorAll('input[name="applicationType"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+      const field = document.getElementById('groupSizeField');
+      const input = document.getElementById('groupSize');
+      if (this.value === 'Group / Team') {
+        field.style.display = 'flex';
+        input.required = true;
+      } else {
+        field.style.display = 'none';
+        input.required = false;
+        input.value = '';
+      }
+    });
+  });
+
+  document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = document.getElementById('submitBtn');
+
+    const applicationType = form.querySelector('input[name="applicationType"]:checked')?.value || '';
+    const data = {
+      fullName: form.fullName.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      location: form.location.value.trim(),
+      applicationType,
+      groupSize: applicationType === 'Group / Team' ? form.groupSize.value.trim() : '',
+      trainingType: form.querySelector('input[name="trainingType"]:checked')?.value || '',
+      skillLevel: form.querySelector('input[name="skillLevel"]:checked')?.value || '',
+      goals: form.goals.value.trim(),
+      referralSource: form.querySelector('input[name="referralSource"]:checked')?.value || '',
+      submittedAt: new Date().toISOString()
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      form.style.display = 'none';
+      document.querySelector('.page-header').style.display = 'none';
+      document.querySelector('.hero-image').style.display = 'none';
+      const success = document.getElementById('successScreen');
+      success.style.display = 'block';
+
+    } catch (err) {
+      showToast('Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+    }
+  });
+</script>
+</body>
+</html>
